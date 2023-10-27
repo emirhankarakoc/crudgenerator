@@ -5,8 +5,13 @@ fastest rest api generator.
 # DONT FORGET LIST
 put your mouse cursor on classname's and add to your package, i cant detect from my computer :d you must replace it.
 
-# put @Id and     @GeneratedValue(strategy = GenerationType.IDENTITY)
-in Entity class
+# put in Entity class
+```
+@Id
+ @GeneratedValue(strategy = GenerationType.IDENTITY)
+private datatype id;
+```
+
 
 # add pomxml modelmapper and swagger
 dependency:
