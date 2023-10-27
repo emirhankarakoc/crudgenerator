@@ -10,9 +10,12 @@ in Entity class
 
 # add modelmapper
 dependency:
+```
 		<dependency><groupId>org.springdoc</groupId><artifactId>springdoc-openapi-starter-webmvc-ui</artifactId><version>2.1.0</version></dependency>
 		<dependency> <groupId>org.modelmapper</groupId><artifactId>modelmapper</artifactId> <version>3.1.1</version> </dependency>
-implemention codes:
+```
+
+## implemention codes:
 Service:
 ```
   import org.modelmapper.ModelMapper;
