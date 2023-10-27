@@ -9,5 +9,48 @@ put your mouse cursor to your classname and add to your package, i cant detect f
 in Entity class
 
 # add modelmapper
+dependency:
+		<dependency><groupId>org.springdoc</groupId><artifactId>springdoc-openapi-starter-webmvc-ui</artifactId><version>2.1.0</version></dependency>
+		<dependency> <groupId>org.modelmapper</groupId><artifactId>modelmapper</artifactId> <version>3.1.1</version> </dependency>
+implemention codes:
+Service:
+```
+  import org.modelmapper.ModelMapper;
 
+    public interface ModelMapperService {
+        ModelMapper forResponse();
+        ModelMapper forRequest();
+    }
+```
+Manager:
+```
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ModelMapperManager implements ModelMapperService{
+    @Autowired
+    private ModelMapper modelMapper;
+    @Override
+    public ModelMapper forResponse() {
+        this.modelMapper.getConfiguration().setAmbiguityIgnored(true).setMatchingStrategy(MatchingStrategies.LOOSE);
+        return this.modelMapper;
+    }
+
+    @Override
+    public ModelMapper forRequest() {
+        this.modelMapper.getConfiguration().setAmbiguityIgnored(true).setMatchingStrategy(MatchingStrategies.STANDARD);
+        return this.modelMapper;
+    }
+}
+```
 # ENTITY NAME HAVE TO STARTS WITH UPPERCASE, CONTINUE WITH LOWERCASE. BE CAREFUL!
