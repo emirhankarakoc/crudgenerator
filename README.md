@@ -8,7 +8,7 @@ put your mouse cursor to your classname and add to your package, i cant detect f
 # put @Id and     @GeneratedValue(strategy = GenerationType.IDENTITY)
 in Entity class
 
-# add modelmapper
+# add pomxml modelmapper and swagger
 dependency:
 ```
 		<dependency><groupId>org.springdoc</groupId><artifactId>springdoc-openapi-starter-webmvc-ui</artifactId><version>2.1.0</version></dependency>
