@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD GENERATOR . NET</title>
+    <style>
+        h1{text-align: center; padding: none; margin: 0;}
+        p{margin: 0;}
+        button{text-align: center;}
+        b{text-align: left;}
+        body{text-align: center;}
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+
+
+</head>
+<body style="background-color: darkgray;">
+    <div style="text-align: center; ">
+        <h1 style="font-size: 70px;">CRUD GENERATOR . NET</h1>
+        <p><b>if doesnt download, just reload the page.</b></p>
+        <h3>ENTITY:</h3> <input  id="entityInput" name="entityInput" type="text" style="width: 400px; font-size: 30px;" placeholder="write entity name here">
+        <p></p>
+        <h3>ATTRIBUTES:</h3>   <input id="attributesInput" name="attributesInput" type="text" style="width: 400px; font-size: 30px;" placeholder="write all attributes here">
+        <p style="font-size: 30px;">you have to define attributes like
+            <h2>int,id;String,firstname;String,lastname;int,age</h2>
+            <p style="font-size: 30px;">no spaces, just like this.</p> <h1> dont put ';' to the end.</h1>
+        </p>
+        <h4>click generate button</h4>
+        <button onclick="gENERATE()">GENERATE ENTITY</button>
+        <button id="downloadAllButton">DOWNLOAD ALL as zip</button>
+        <p>&nbsp;</p>
+    </div>
+<div class="data" style="background-color: blanchedalmond;">
+    <h1>ENTITY CLASS   </h1>
+    <button id="downloadEntityButton">Download </button>
+
+    <p  id="t_entity_takendisi_getir"></p>
+    <h1>CONTROLLER CLASS   </h1>
+    <button id="downloadControllerButton">Download </button>
+    &nbsp;
+    <p id="t_entitycontroller"></p>
+    <h1>EntityDTO CLASS   </h1>
+    <button id="downloadEntityDTOButton">Download </button>
+    &nbsp;
+
+    <p id="T_ENTITY_DTO"></p>
+    <h1>MANAGER CLASS   </h1>
+    <button id="downloadManagerButton">Download </button>
+        &nbsp;
+
+    <p id="t_entitymananager"></p>
+    <h1>REPOSITORY CLASS   </h1>
+    <button id="downloadRepositoryButton">Download </button>
+        &nbsp;
+
+    <p id="T_ENTITYREPOSITORY"></p>
+    <h1>EntitysDTO CLASS   </h1>
+    <button id="downloadEntitysDTOButton">Download </button>
+        &nbsp;
+
+    <p id="T_ENTITYS_DTO"></p>
+    <h1>SERVICE CLASS   </h1>
+    <button id="downloadServiceButton">Download </button>
+        &nbsp;
+
+    <p id="T_ENTITYSERVICE"></p>
+    <h1>CREATE Request CLASS   </h1>
+    <button id="downloadCreateRequestButton">Download </button>
+        &nbsp;
+
+    <p id="T_CREATEENTITYREQUEST"></p>
+    <h1>Update Request CLASS   </h1>
+    <button id="downloadUpdateRequestButton">Download </button>
+        &nbsp;
+
+    <p id="T_UPDATEENTITYREQUEST"></p>
+</div>
+   <script>
+
+        function gENERATE(){
+        var entityInput = document.getElementById('entityInput');
+        var entityIsmi = entityInput.value;
+        var entityKucukHarfBaslayan = entityIsmi[0].toLowerCase() + entityIsmi.slice(1);
+        var attributesInput = document.getElementById('attributesInput');
+        var fields = attributesInput.value;
+        var fieldArray = fields.split(';'); // ';' ile ayrılan alanları diziye böler
+        var field = [];
+        fieldArray.forEach(function(item) {
+            var parts = item.split(','); // ',' ile ayrılan veri türü ve alan adını böler
+            var fieldType = parts[0];
+            var fieldName = parts[1];
+            var fieldObject = {
+                type: fieldType,
+                name: fieldName
+            };
+            field.push(fieldObject);
+        });
+    
+        var T_MODEL_MAPPER_SERVICE ="import org.modelmapper.ModelMapper\m\m"+ "public interface ModelMapperService {\n" +
+    "    ModelMapper forResponse();\n" +
+    "    ModelMapper forRequest();\n" +
+    "}";
+
+    var T_MODEL_MAPPER_MANAGER ="import lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\nimport org.modelmapper.ModelMapper;\nimport org.modelmapper.convention.MatchingStrategies;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.stereotype.Service;"+ "@Service\n" +
+    "@Data\n" +
+    "@AllArgsConstructor\n" +
+    "@NoArgsConstructor\n" +
+    "public class ModelMapperManager implements ModelMapperService{\n" +
+    "    @Autowired\n" +
+    "    private ModelMapper modelMapper;\n" +
+    "    @Override\n" +
+    "    public ModelMapper forResponse() {\n" +
+    "        this.modelMapper.getConfiguration().setAmbiguityIgnored(true).setMatchingStrategy(MatchingStrategies.LOOSE);\n" +
+    "        return this.modelMapper;\n" +
+    "    }\n" +
+    "\n" +
+    "    @Override\n" +
+    "    public ModelMapper forRequest() {\n" +
+    "        this.modelMapper.getConfiguration().setAmbiguityIgnored(true).setMatchingStrategy(MatchingStrategies.STANDARD);\n" +
+    "        return this.modelMapper;\n" +
+    "    }\n" +
+    "}";
+
+    var T_BEAN_MODEL_MAPPER = "@Bean\n" +
+    "public ModelMapper getModelMapper(){\n" +
+    "    return new ModelMapper();\n" +
+    "}";
+
+
+    const springdocDependency = '<dependency>\n' +
+'    <groupId>org.springdoc</groupId>\n' +
+'    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>\n' +
+'    <version>2.1.0</version>\n' +
+'</dependency>';
+
+const modelMapperDependency = '<dependency>\n' +
+'    <groupId>org.modelmapper</groupId>\n' +
+'    <artifactId>modelmapper</artifactId>\n' +
+'    <version>3.1.1</version>\n' +
+'</dependency>';
+
+var T_MODEL_MAPPER_DEPENDENCY = String("<dependency>\n" +
+'    <groupId>org.springdoc</groupId>\n' +
+'    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>\n' +
+'    <version>2.1.0</version>\n' +
+'</dependency>'+'<dependency>\n' +
+'    <groupId>org.modelmapper</groupId>\n' +
+'    <artifactId>modelmapper</artifactId>\n' +
+'    <version>3.1.1</version>\n' +
+'</dependency>');
+
+
+
+
+    var T_ENTITYSERVICE = "import java.util.List;\n\n"+"public interface " + entityIsmi+"Service {\n" +
+        "    List<"+entityIsmi+"sDTO> get"+entityIsmi+"s();  //you should insert List class...\n" +
+        "    "+entityIsmi+"DTO get"+entityIsmi+"("+field[0].type+" "+field[0].name+");\n" +
+        "    void create"+entityIsmi+"(Create"+entityIsmi+"Request create"+entityIsmi+"Request);\n" +
+        "    void delete"+entityIsmi+"("+field[0].type+" "+field[0].name+");\n" +
+        "    void update"+entityIsmi+"(Update"+entityIsmi+"Request update"+entityIsmi+"Request);\n" +
+        "}";
+        
+        var T_ENTITYS_DTO = "import lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;"
++"@Data\n" +
+    "@AllArgsConstructor\n" +
+    "@NoArgsConstructor\n" +
+    "public class " + entityIsmi + "sDTO {\n";
+        field.forEach(function(item) {
+            T_ENTITYS_DTO += "    private " + item.type + " " + item.name + ";\n";
+        });
+        T_ENTITYS_DTO += "}";
+
+
+        var T_ENTITY_DTO = "import lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;"+"@Data\n" +
+    "@AllArgsConstructor\n" +
+    "@NoArgsConstructor\n" +
+    "public class " + entityIsmi + "DTO {\n";
+        field.forEach(function(item) {
+            T_ENTITY_DTO += "    private " + item.type + " " + item.name + ";\n";
+        });
+        T_ENTITY_DTO += "}";
+
+    var T_ENTITYREPOSITORY ="import org.springframework.data.jpa.repository.JpaRepository;\n\n"+ "public interface "+entityIsmi+"Repository extends JpaRepository<"+entityIsmi+ ","+field[0].type+"> {\n" +
+    "    //you should change int to Integer \n" +
+    "\n" +
+    "}";
+
+
+    var T_ENTITYMANAGER = 
+    "import lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\nimport org.springframework.stereotype.Service;\nimport java.util.List;\nimport java.util.stream.Collectors;"+
+    
+    "@Service\n" +
+    "@Data\n" +
+    "@AllArgsConstructor\n" +
+    
+    "public class "+entityIsmi+"Manager implements "+entityIsmi+"Service {\n" +
+    "    private "+entityIsmi+"Repository "+entityKucukHarfBaslayan+"Repository;\n" +
+    "    private ModelMapperManager modelMapperManager;\n" +
+    "    @Override\n" +
+    "    public List<"+entityIsmi+"sDTO> get"+entityIsmi+"s() {\n" +
+    "        List<"+entityIsmi+"> "+entityKucukHarfBaslayan+"s = this."+entityKucukHarfBaslayan+"Repository.findAll();\n" +
+    "        List<"+entityIsmi+"sDTO> "+entityKucukHarfBaslayan+"sResponse = "+entityKucukHarfBaslayan+"s.stream()\n" +
+    "            .map("+entityKucukHarfBaslayan+" -> this.modelMapperManager.forResponse()\n" +
+    "                .map("+entityKucukHarfBaslayan+", "+entityIsmi+"sDTO.class)).collect(Collectors.toList());\n" +
+    "        return "+entityKucukHarfBaslayan+"sResponse;\n" +
+    "    }\n" +
+    "\n" +
+    "    @Override\n" +
+    "    public void create"+entityIsmi+"(Create"+entityIsmi+"Request create"+entityIsmi+"Request) {\n" +
+    "        "+entityIsmi+" "+entityKucukHarfBaslayan+" = this.modelMapperManager.forRequest().map(create"+entityIsmi+"Request, "+entityIsmi+".class);\n" +
+    "        this."+entityKucukHarfBaslayan+"Repository.save("+entityKucukHarfBaslayan+");\n" +
+    "    }\n" +
+    "    @Override\n" +
+    "    public void update"+entityIsmi+"(Update"+entityIsmi+"Request update"+entityIsmi+"Request) {\n" +
+    "        "+entityIsmi+" "+entityKucukHarfBaslayan+" = this.modelMapperManager.forRequest().map(update"+entityIsmi+"Request, "+entityIsmi+".class);\n" +
+    "        this."+entityKucukHarfBaslayan+"Repository.save("+entityKucukHarfBaslayan+");\n" +
+    "    }\n" +
+    "    @Override\n" +
+    "    public void delete"+entityIsmi+"("+field[0].type+" "+field[0].name+") {\n" +
+    "        this."+entityKucukHarfBaslayan+"Repository.deleteById("+field[0].name+"); //maybe here crashes, you should control id's datatype while implementing.\n" +
+    "    }\n" +
+    "    @Override\n" +
+    "    public "+entityIsmi+"DTO get"+entityIsmi+"("+field[0].type+" "+field[0].name+") {\n" +
+    "        "+entityIsmi+" doneceknesne = this."+entityKucukHarfBaslayan+"Repository.findById("+field[0].name+").orElseThrow();\n" +
+    "        "+entityIsmi+"DTO response = this.modelMapperManager.forResponse().map(doneceknesne, "+entityIsmi+"DTO.class);\n" +
+    "        return response;\n" +
+    "    }\n" +
+    "}";
+
+
+
+    var T_ENTITYCONTROLLER = "import lombok.AllArgsConstructor;\nimport org.springframework.http.HttpStatus;\nimport org.springframework.web.bind.annotation.*;\nimport java.util.List;"+
+    "@RestController\n" +
+    "@RequestMapping(\"/api/"+entityKucukHarfBaslayan+"s\")\n" +
+    "@CrossOrigin\n" +
+    "@AllArgsConstructor\n" +
+    "public class "+entityIsmi+"Controller {\n" +
+    "    private final "+entityIsmi+"Service "+entityKucukHarfBaslayan+"Service;\n" +
+    "    @GetMapping(\"/{id}\")\n" +
+    "    public "+entityIsmi+"DTO get"+entityIsmi+"(@PathVariable "+field[0].type+" "+field[0].name+") {\n" +
+    "        return "+entityKucukHarfBaslayan+"Service.get"+entityIsmi+"("+field[0].name+");\n" +
+    "    }\n" +
+    "    @GetMapping\n" +
+    "    public List<"+entityIsmi+"sDTO> get"+entityIsmi+"s() {\n" +
+    "        return "+entityKucukHarfBaslayan+"Service.get"+entityIsmi+"s();\n" +
+    "    }\n" +
+    "    @PostMapping\n" +
+    "    @ResponseStatus(HttpStatus.CREATED)\n" +
+    "    public void create"+entityIsmi+"(@RequestBody Create"+entityIsmi+"Request create"+entityIsmi+"Request) {\n" +
+    "         this."+entityKucukHarfBaslayan+"Service.create"+entityIsmi+"(create"+entityIsmi+"Request);\n" +
+    "    }\n" +
+    "    @PutMapping(\"/update"+entityIsmi+"\")\n" +
+    "    @ResponseStatus(HttpStatus.CREATED)\n" +
+    "    public void update"+entityIsmi+"(@RequestBody Update"+entityIsmi+"Request update"+entityIsmi+"Request) {\n" +
+    "        this."+entityKucukHarfBaslayan+"Service.update"+entityIsmi+"(update"+entityIsmi+"Request);\n" +
+    "    }\n" +
+    "    @DeleteMapping(\"/delete"+entityIsmi+"/{id}\")\n" +
+    "    public void delete"+entityIsmi+"(@PathVariable  "+field[0].type+" "+field[0].name+") { this."+entityKucukHarfBaslayan+"Service.delete"+entityIsmi+"("+field[0].name+"); }\n" +
+    "}";
+
+    var T_ENTITY_TAKENDISI = 
+        "import jakarta.persistence.Entity;\n" +
+        "import jakarta.persistence.Id;\n"+
+        "import lombok.*;\n" +
+        
+        "@Entity\n" +
+        "@Data\n" +
+        "@Builder\n" +
+        "@AllArgsConstructor\n" +
+        "@NoArgsConstructor\n" +
+        "public class " + entityIsmi + "{ //you should put @Id and @GeneratedValue annotations to your primary key\n";
+            field.forEach(function(item) {
+                T_ENTITY_TAKENDISI += "    private " + item.type + " " + item.name + ";\n";
+            });
+            T_ENTITY_TAKENDISI += "}";
+
+
+
+
+
+        var T_UPDATEENTITYREQUEST ="import lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;" + "@Data\n" +
+    "@AllArgsConstructor\n" +
+    "@NoArgsConstructor\n" +
+    "public class Update" + entityIsmi + "Request {\n";
+
+        field.forEach(function (item, index) {
+            
+                T_UPDATEENTITYREQUEST += "    private " + item.type + " " + item.name + ";\n";
+           
+        });
+
+        T_UPDATEENTITYREQUEST += "}";
+
+        
+        var T_CREATEENTITYREQUEST ="import lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;"+ "@Data\n" +
+    "@AllArgsConstructor\n" +
+    "@NoArgsConstructor\n" +
+    "public class Create" + entityIsmi + "Request {\n";
+
+        field.forEach(function (item, index) {
+            if (index !== 0) {
+                T_CREATEENTITYREQUEST += "    private " + item.type + " " + item.name + ";\n";
+            }
+        });
+        T_CREATEENTITYREQUEST += "}";
+
+
+        document.getElementById('t_entity_takendisi_getir').innerHTML =T_ENTITY_TAKENDISI
+        document.getElementById('t_entitycontroller').innerHTML =T_ENTITYCONTROLLER
+        document.getElementById('T_ENTITY_DTO').innerHTML =T_ENTITY_DTO
+        document.getElementById('t_entitymananager').innerHTML =T_ENTITYMANAGER
+        document.getElementById('T_ENTITYREPOSITORY').innerHTML =T_ENTITYREPOSITORY
+        document.getElementById('T_ENTITYS_DTO').innerHTML =T_ENTITYS_DTO
+        document.getElementById('T_ENTITYSERVICE').innerHTML =T_ENTITYSERVICE
+        document.getElementById('T_CREATEENTITYREQUEST').innerHTML =T_CREATEENTITYREQUEST
+        document.getElementById('T_UPDATEENTITYREQUEST').innerHTML =T_UPDATEENTITYREQUEST
+    
+        
+        function createAndDownloadJavaFile(javaCode, fileName) {
+    // Blob oluşturun
+    var blob = new Blob([javaCode], { type: "text/plain" });
+    // Dosyayı indirme bağlantısını oluşturun
+    var a = document.createElement("a");
+    a.href = window.URL.createObjectURL(blob);
+    a.download = fileName;
+    // Bağlantıya tıklayın ve dosyayı indirin
+    a.click();
+}
+// Butona tıklanınca .java dosyasını oluşturun ve indirin
+document.getElementById("downloadEntityButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_ENTITY_TAKENDISI, entityIsmi + ".java");
+}, { once: true });
+
+document.getElementById("downloadControllerButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_ENTITYCONTROLLER, entityIsmi + "Controller.java");
+}, { once: true });
+document.getElementById("downloadEntityDTOButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_ENTITY_DTO, entityIsmi + "DTO.java");
+}, { once: true });
+
+document.getElementById("downloadManagerButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_ENTITYMANAGER, entityIsmi + "Manager.java");
+}, { once: true });
+
+document.getElementById("downloadRepositoryButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_ENTITYREPOSITORY, entityIsmi + "Repository.java");
+}, { once: true });
+
+document.getElementById("downloadEntitysDTOButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_ENTITYS_DTO, entityIsmi + "sDTO.java");
+}, { once: true });
+document.getElementById("downloadServiceButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_ENTITYSERVICE, entityIsmi + "Service.java");
+}, { once: true });
+
+document.getElementById("downloadCreateRequestButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_CREATEENTITYREQUEST, "Create"+entityIsmi + "Request.java");
+}, { once: true });
+document.getElementById("downloadUpdateRequestButton").addEventListener("click", function() {
+    createAndDownloadJavaFile(T_UPDATEENTITYREQUEST, "Update"+entityIsmi + "Request.java");
+}, { once: true });
+
+function createAndDownloadZip() {
+    const jszip = new JSZip();
+    const entityninIsmi = "" + entityIsmi;
+    jszip.file(entityninIsmi + ".java", T_ENTITY_TAKENDISI);
+    jszip.file(entityninIsmi + "Controller.java", T_ENTITYCONTROLLER);
+    jszip.file(entityninIsmi + "DTO.java", T_ENTITY_DTO);
+    jszip.file(entityninIsmi + "Manager.java", T_ENTITYMANAGER);
+    jszip.file(entityninIsmi + "Repository.java", T_ENTITYREPOSITORY);
+    jszip.file(entityninIsmi + "sDTO.java", T_ENTITYS_DTO);
+    jszip.file(entityninIsmi + "Service.java", T_ENTITYSERVICE);
+    jszip.file("Create" + entityninIsmi + "Request.java", T_CREATEENTITYREQUEST);
+    jszip.file("Update" + entityninIsmi + "Request.java", T_UPDATEENTITYREQUEST);
+
+    // ZIP dosyasını oluşturun ve indirme bağlantısını oluşturun
+    jszip.generateAsync({ type: "blob" }).then(function (content) {
+        const url = window.URL.createObjectURL(content);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = entityninIsmi + ".zip";
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    });
+   
+
+}
+document.getElementById("downloadAllButton").addEventListener("click", createAndDownloadZip);
+
+
+}
+
+
+
+console.log("Bismillah");
+
+    </script>
+</body>
+</html>
