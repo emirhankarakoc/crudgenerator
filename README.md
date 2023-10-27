@@ -1,5 +1,5 @@
-# crudgenerator
-fastest rest api packaging generator.
+# CRUD GENERATOR . NET by emirhankarakoc
+fastest rest api generator.
 ![crudfoto](https://github.com/emirhankarakoc/crudgenerator/assets/101813995/1002c19e-dfbd-48dd-8782-b41a581f1af1)
 
 # DONT FORGET LIST
