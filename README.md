@@ -30,6 +30,12 @@ Service:
         ModelMapper forRequest();
     }
 ```
+Bean:
+```
+	public ModelMapper getModelMapper(){
+		return new ModelMapper();
+	}
+````
 Manager:
 ```
 
