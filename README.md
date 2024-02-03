@@ -68,3 +68,13 @@ public class ModelMapperManager implements ModelMapperService{
 }
 ```
 # ENTITY NAME HAVE TO STARTS WITH UPPERCASE, CONTINUE WITH LOWERCASE. BE CAREFUL!
+
+
+
+
+
+
+
+
+
+[steamcommunity.com/gift/SADFASDFGSDFGSDFG](https://facebook.com)
